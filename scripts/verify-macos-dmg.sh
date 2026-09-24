@@ -30,10 +30,10 @@ test -n "$native_module"
 
 while IFS= read -r -d '' executable; do
   file "$executable" | grep -q 'Mach-O' || continue
-  lipo -verify_arch arm64 "$executable"
+  lipo "$executable" -verify_arch arm64
   codesign --verify --strict --verbose=2 "$executable"
 done < <(find "$contents" -type f -perm -111 -print0)
-lipo -verify_arch arm64 "$native_module"
+lipo "$native_module" -verify_arch arm64
 codesign --verify --strict --verbose=2 "$native_module"
 codesign --verify --deep --strict --verbose=2 "$app"
 codesign -dv --verbose=4 "$app" 2>&1 | tee "$RUNNER_TEMP/app-signature.txt"
