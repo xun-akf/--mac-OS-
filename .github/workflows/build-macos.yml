@@ -25,7 +25,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: project-investment-manager-mac-arm64
-          path: release/项目投资资料管理工具-mac-arm64.dmg
+          path: release/Project-Investment-Manager-mac-arm64.dmg
           if-no-files-found: error
       - name: Publish GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')
@@ -35,7 +35,7 @@ jobs:
         run: |
           test "$(node -p 'require("./package.json").version')" = "${GITHUB_REF_NAME#v}"
           gh release create "${GITHUB_REF_NAME}" \
-            'release/项目投资资料管理工具-mac-arm64.dmg' \
+            'release/Project-Investment-Manager-mac-arm64.dmg' \
             --verify-tag \
             --title "项目投资资料管理工具 ${GITHUB_REF_NAME}" \
             --notes 'Apple Silicon (M1/M2/M3) 内部测试包，采用 ad-hoc 签名。未做 Apple Developer ID 签名与公证，下载后 Gatekeeper 仍可能阻止首次打开。'

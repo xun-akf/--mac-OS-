@@ -4,7 +4,7 @@
 
 ## 开发与构建
 
-安装 Node.js 22+ 与 pnpm，执行 `pnpm install`、`pnpm build`。开发时可执行 `pnpm dev`。Windows 安装包执行 `pnpm pack:win`。Apple Silicon 安装包由 GitHub Actions 的 **Build and release macOS app** 工作流在 arm64 Runner 上构建。推送版本标签后，工作流运行测试、生成 DMG，并对 DMG 内的 `.app` 检查 Info.plist、Electron Framework、Helper、资源、原生模块、arm64 架构与签名。发布附件只有 `项目投资资料管理工具-mac-arm64.dmg`。
+安装 Node.js 22+ 与 pnpm，执行 `pnpm install`、`pnpm build`。开发时可执行 `pnpm dev`。Windows 安装包执行 `pnpm pack:win`。Apple Silicon 安装包由 GitHub Actions 的 **Build and release macOS app** 工作流在 arm64 Runner 上构建。推送版本标签后，工作流运行测试、生成 DMG，并对 DMG 内的 `.app` 检查 Info.plist、Electron Framework、Helper、资源、原生模块、arm64 架构与签名。发布附件只有 `Project-Investment-Manager-mac-arm64.dmg`。
 
 目前 macOS 包使用 ad-hoc 签名。这能检查包内代码的完整性，但不能代替 Apple Developer ID 签名和公证；从网络下载后的 Gatekeeper 检查仍可能拒绝它。工作流记录 `spctl` 的真实结果，不把临时签名的完整性检查当成可在其他 Mac 正常打开的证明。若要求下载后直接双击运行，需要 Developer ID 签名及 Apple 公证。
 

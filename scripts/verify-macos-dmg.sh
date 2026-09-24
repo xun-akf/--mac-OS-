@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-dmg='release/项目投资资料管理工具-mac-arm64.dmg'
+dmg='release/Project-Investment-Manager-mac-arm64.dmg'
 test -s "$dmg"
 mount_point="$RUNNER_TEMP/project-manager-dmg"
 mkdir -p "$mount_point"
