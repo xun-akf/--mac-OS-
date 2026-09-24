@@ -68,6 +68,12 @@
       ],
       "artifactName": "项目投资资料管理工具-mac-${arch}.${ext}",
       "icon": "build/icon.png"
+    },
+    "dmg": {
+      "contents": [
+        { "x": 130, "y": 220, "type": "file" },
+        { "x": 410, "y": 220, "type": "link", "path": "/Applications" }
+      ]
     }
   }
 }

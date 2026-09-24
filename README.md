@@ -4,7 +4,7 @@
 
 ## 开发与构建
 
-安装 Node.js 22+ 与 pnpm，执行 `pnpm install`、`pnpm build`。开发时可执行 `pnpm dev`。Windows 安装包执行 `pnpm pack:win`。Apple Silicon 安装包由 GitHub Actions 的 **Build macOS app** 工作流在 macOS arm64 Runner 上构建。进入仓库的 **Actions → Build macOS app → Run workflow** 可手动重新生成；运行成功后在该次运行页面底部 **Artifacts** 下载 `project-investment-manager-mac-arm64`，解压后得到 `项目投资资料管理工具-mac-arm64.dmg`。DMG 中包含完整 `.app`，最终用户无需安装开发工具或打开终端。当前配置产出未签名应用，首次打开可能受 Gatekeeper 提示；正式分发建议配置 Apple Developer 签名与公证。
+安装 Node.js 22+ 与 pnpm，执行 `pnpm install`、`pnpm build`。开发时可执行 `pnpm dev`。Windows 安装包执行 `pnpm pack:win`。Apple Silicon 安装包由 GitHub Actions 的 **Build and release macOS app** 工作流在 macOS arm64 Runner 上构建。推送 `v*` 标签后，工作流会运行测试、生成并挂载检查 `项目投资资料管理工具-mac-arm64.dmg`，随后自动创建 GitHub Release 并上传 DMG。DMG 中有完整 `.app` 和“应用程序”快捷方式，用户将 App 拖入其中即可安装。当前安装包未做 Apple 开发者签名与公证；首次打开如受 Gatekeeper 拦截，在“应用程序”中对 App 右键选择“打开”，再确认打开。正式分发建议配置 Apple Developer 签名与公证。
 
 ## 数据位置
 

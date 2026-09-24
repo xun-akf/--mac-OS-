@@ -1,13 +1,13 @@
-name: Build macOS app
+name: Build and release macOS app
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    tags: ['v*']
+permissions:
+  contents: write
 jobs:
   macos:
     runs-on: macos-15
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -19,15 +19,36 @@ jobs:
       - run: corepack pnpm pack:mac
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
-      - name: Verify arm64 DMG and app bundle
+      - name: Verify Apple Silicon DMG
+        shell: bash
         run: |
-          test -s 'release/项目投资资料管理工具-mac-arm64.dmg'
-          hdiutil attach 'release/项目投资资料管理工具-mac-arm64.dmg' -readonly -nobrowse -mountpoint "$RUNNER_TEMP/project-manager-dmg"
-          test -d "$RUNNER_TEMP/project-manager-dmg/项目投资资料管理工具.app"
-          test -f "$RUNNER_TEMP/project-manager-dmg/项目投资资料管理工具.app/Contents/MacOS/项目投资资料管理工具"
-          hdiutil detach "$RUNNER_TEMP/project-manager-dmg"
+          set -euo pipefail
+          dmg='release/项目投资资料管理工具-mac-arm64.dmg'
+          test -s "$dmg"
+          mount_point="$RUNNER_TEMP/project-manager-dmg"
+          mkdir -p "$mount_point"
+          hdiutil attach "$dmg" -readonly -nobrowse -mountpoint "$mount_point"
+          trap 'hdiutil detach "$mount_point"' EXIT
+          app="$mount_point/项目投资资料管理工具.app"
+          test -d "$app"
+          test -L "$mount_point/Applications"
+          test "$(readlink "$mount_point/Applications")" = /Applications
+          binary="$app/Contents/MacOS/项目投资资料管理工具"
+          test -f "$binary"
+          file "$binary" | grep -q arm64
       - uses: actions/upload-artifact@v4
         with:
           name: project-investment-manager-mac-arm64
           path: release/项目投资资料管理工具-mac-arm64.dmg
           if-no-files-found: error
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            'release/项目投资资料管理工具-mac-arm64.dmg' \
+            --verify-tag \
+            --title "项目投资资料管理工具 ${GITHUB_REF_NAME}" \
+            --notes 'Apple Silicon (M1/M2/M3) macOS 安装包。打开 DMG，将 App 拖入“应用程序”。本版本未做 Apple 开发者签名与公证。'
