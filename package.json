@@ -1,0 +1,73 @@
+{
+  "name": "project-investment-manager",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.19.0",
+  "main": "dist-main/main.js",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 & electron .",
+    "build": "tsc -b && vite build && esbuild main/main.ts main/preload.ts --bundle --platform=node --format=cjs --external:electron --external:better-sqlite3 --outdir=dist-main",
+    "build:win": "pnpm build && electron-builder --win nsis --x64",
+    "build:mac": "pnpm build && electron-builder --mac dmg --arm64",
+    "pack:win": "pnpm build:win",
+    "pack:mac": "pnpm build:mac",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "better-sqlite3": "^12.2.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "lucide-react": "^0.468.0"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.5.7",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "electron": "^38.0.0",
+    "electron-builder": "^26.0.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.9.0",
+    "vite": "^7.0.0",
+    "vitest": "^3.2.0"
+  },
+  "build": {
+    "appId": "cn.project.investment.manager",
+    "productName": "项目投资资料管理工具",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-main/**/*",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "**/*.node"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "artifactName": "项目投资资料管理工具-Setup.${ext}"
+    },
+    "mac": {
+      "category": "public.app-category.business",
+      "target": [
+        "dmg"
+      ],
+      "artifactName": "项目投资资料管理工具-mac-${arch}.${ext}",
+      "icon": "build/icon.png"
+    }
+  }
+}

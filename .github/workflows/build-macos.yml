@@ -1,0 +1,33 @@
+name: Build macOS app
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  macos:
+    runs-on: macos-15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: corepack enable
+      - run: corepack pnpm install --frozen-lockfile
+      - run: corepack pnpm test
+      - run: corepack pnpm pack:mac
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - name: Verify arm64 DMG and app bundle
+        run: |
+          test -s 'release/项目投资资料管理工具-mac-arm64.dmg'
+          hdiutil attach 'release/项目投资资料管理工具-mac-arm64.dmg' -readonly -nobrowse -mountpoint "$RUNNER_TEMP/project-manager-dmg"
+          test -d "$RUNNER_TEMP/project-manager-dmg/项目投资资料管理工具.app"
+          test -f "$RUNNER_TEMP/project-manager-dmg/项目投资资料管理工具.app/Contents/MacOS/项目投资资料管理工具"
+          hdiutil detach "$RUNNER_TEMP/project-manager-dmg"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: project-investment-manager-mac-arm64
+          path: release/项目投资资料管理工具-mac-arm64.dmg
+          if-no-files-found: error
