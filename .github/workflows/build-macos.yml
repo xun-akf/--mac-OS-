@@ -2,7 +2,7 @@ name: Build and release macOS app
 on:
   workflow_dispatch:
   push:
-    tags: ['v*']
+    branches: [main]
 permissions:
   contents: write
 jobs:
@@ -42,13 +42,12 @@ jobs:
           path: release/项目投资资料管理工具-mac-arm64.dmg
           if-no-files-found: error
       - name: Publish GitHub Release
-        if: startsWith(github.ref, 'refs/tags/v')
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          gh release create "${GITHUB_REF_NAME}" \
+          gh release create v1.0.0 \
             'release/项目投资资料管理工具-mac-arm64.dmg' \
-            --verify-tag \
-            --title "项目投资资料管理工具 ${GITHUB_REF_NAME}" \
+            --target "${GITHUB_SHA}" \
+            --title '项目投资资料管理工具 v1.0.0' \
             --notes 'Apple Silicon (M1/M2/M3) macOS 安装包。打开 DMG，将 App 拖入“应用程序”。本版本未做 Apple 开发者签名与公证。'
