@@ -1,6 +1,6 @@
 {
   "name": "project-investment-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "packageManager": "pnpm@11.19.0",
   "main": "dist-main/main.js",
@@ -63,6 +63,8 @@
     },
     "mac": {
       "category": "public.app-category.business",
+      "identity": "-",
+      "hardenedRuntime": false,
       "target": [
         "dmg"
       ],
